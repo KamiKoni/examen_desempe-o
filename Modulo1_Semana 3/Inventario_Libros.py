@@ -5,11 +5,11 @@ from itertools import groupby
 
 
 inventory = [
-    {"title": "it", "author" : "stephen king", "category" : "horror","price": 10.0, "quantity": 100},
-    {"title": "the shining","author" : "stephen king","category" : "horror", "price": 15.0, "quantity": 50},
-    {"title": "the portrait of dorian gray","author": "oscar wilde","category" : "gothic horror", "price": 20.0, "quantity": 30},
-    {"title": "pride and prejudice","author" : "jane austen","category" : "romance", "price": 25.0, "quantity": 10},
-    {"title": "frankenstein","author" : "mary shelley","category" : "gothic fiction", "price": 30.0, "quantity": 5}
+    {"title": "it", "author" : "stephen king", "category" : "horror","price": 10.0, "quantity": 150},
+    {"title": "the shining","author" : "stephen king","category" : "horror", "price": 15.0, "quantity": 150},
+    {"title": "the portrait of dorian gray","author": "oscar wilde","category" : "gothic horror", "price": 20.0, "quantity": 150},
+    {"title": "pride and prejudice","author" : "jane austen","category" : "romance", "price": 25.0, "quantity": 150},
+    {"title": "frankenstein","author" : "mary shelley","category" : "gothic fiction", "price": 30.0, "quantity": 150}
 ]
 sales_inventory = [ {"client" : "Valentin","selled product" : "it", "author" : "stephen king", "quantity" : 10,"date" : date.today(),"discount" : 10}
                        ]
@@ -182,13 +182,13 @@ def sales_CRUD():
 def Calculate():
     total = sum(p["price"] * p["quantity"] for p in inventory)  # Multiply price by quantity
 
-    def majorThree(): #groups the three higher in quantity books
+    def majorThree(): #groups the three most selled books in a list.
         count = {}
         for s in sales_inventory:
             name = s["client"]
             count[name] = count.get(name, 0) + s["quantity"]
 
-        return sorted(count.items(), key=lambda x: x[1], reverse = False[:3])
+        return sorted(count.items(), key=lambda x: x[1], reverse = True[:3])
 
 
     def group_by_author(): #Group by author
