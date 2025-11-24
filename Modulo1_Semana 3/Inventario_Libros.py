@@ -116,7 +116,7 @@ def remove():
 def sales_CRUD():
     # Function to register books
 
-    Amount = input("Cuantas ventas haras hoy: ")
+    Amount = int(input("Cuantas ventas haras hoy: "))
     if not Amount:
         print( ("ERROR, NO PUEDES DEJAR LOS CAMPOS VACIOS"))
         return
@@ -125,35 +125,34 @@ def sales_CRUD():
     while Amount != 0:  # loop to add multiple books
 
         search = input(("Cual es el titulo del libro que venderas: "))
-        for iteration in inventory:
-            if iteration["title"].lower() == search.lower():  # Ignora mayúsculas/minúsculas
-                continue
+        for book in inventory:
+            if book["title"].lower() == search.lower():  # Ignora mayúsculas/minúsculas
+
+                client = input("Cual es el nombre del cliente: ")
+                try:
+                    quantity = int(input("Cual es la cantidad del producto vendido?: "))
+                    discount = float(input("Cual es el descuento aplicado a la compra: "))
+                except ValueError:
+                    print(("ERROR, VALOR INGRESADO NO VALIDO"))
+                    return
+                if(discount <= 0 or quantity <= 0):  # positive numbers validation
+                    print(("ERROR, SOLO SE PERMITEN NUMEROS POSITIVOS"))
+                    continue
+                if(book["quantity"] <= 0):
+                    print("EL STOCK DEL PRODUCTO ESTA VACIO")
+                    break
+                if not client or not quantity or not discount or not search:
+                    print(("ERROR, NO PUEDES DEJAR LOS CAMPOS VACIOS"))
+                    return
+                else:
+                    print(("Venta introducida, agregada al sistema exitosamente✔"))
+                    Amount -= 1
+                    sale = {"client" : client,"selled product" : search, "author" : book["author"], "quantity" : quantity,"date" : datetime.date,"discount" : discount}
+                    book["quantity"] -= quantity
+                    inventory.append(sale)  # adds the book, entered by the user onto the inventory.
             else:
                 print(("El libro que ingresaste no esta actualmente en el inventario"))
                 return
-        client = input("Cual es el nombre del cliente: ")
-        try:
-            quantity = int(input("Cual es la cantidad del producto vendido?: "))
-            discount = float(input("Cual es el descuento aplicado a la compra: "))
-        except ValueError:
-            print(("ERROR, VALOR INGRESADO NO VALIDO"))
-            return
-        if(discount <= 0 or quantity <= 0):  # positive numbers validation
-            print(("ERROR, SOLO SE PERMITEN NUMEROS POSITIVOS"))
-            continue
-        if(iteration["quantity"] <= 0):
-            print("EL STOCK DEL PRODUCTO ESTA VACIO")
-            break
-        if not client or not quantity or not discount or not search:
-            print(("ERROR, NO PUEDES DEJAR LOS CAMPOS VACIOS"))
-            return
-        else:
-            print(("Venta introducida, agregada al sistema exitosamente✔"))
-            Amount -= 1
-            sale = {"client" : client,"selled product" : search, "author" : iteration["author"], "quantity" : quantity,"date" : datetime.date,"discount" : discount}
-            iteration["quantity"] -= quantity
-            inventory.append(sale)  # adds the book, entered by the user onto the inventory.
-
 
 # Function to calculate the total value of the inventory
 def Calculate():
