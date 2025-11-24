@@ -97,7 +97,7 @@ def update():
 # Function to remove book by title
 def remove():
     search = input(("Cual es el titulo del libro que eliminaras: "))
-    found = [book for book in inventory if book["title"].lower() == search.lower()]
+    found = [book for book in inventory if book["title"].lower() == search.lower()] #search for the required book and verifies if it's on the inventory
     if not found:
         print("LIBRO NO ENCONTRADO EN EL SISTEMA")
         return
@@ -111,7 +111,7 @@ def remove():
                 inventory.remove(book)  # Deletes every book that it finds.
             print(f"Se eliminaron {len(found)} libro(s) correctamente.")
             break
-        elif delete == "n":
+        elif delete == "n": 
             print("No se eliminó ningún libro.")
             break
         else:
@@ -127,7 +127,6 @@ def sales_CRUD():
     # Function to register books
 
     sale = []  # temporal list that ultimately is added into the inventory
-    
     
     def register_sales():
         while True:
@@ -183,18 +182,17 @@ def sales_CRUD():
 def Calculate():
     total = sum(p["price"] * p["quantity"] for p in inventory)  # Multiply price by quantity
 
-    def majorThree(): #group 
+    def majorThree(): #groups the three higher in quantity books
         count = {}
         for s in sales_inventory:
             name = s["client"]
             count[name] = count.get(name, 0) + s["quantity"]
 
-        return sorted(count.items(), key=lambda x: x[1], reverse=True)[:3]
+        return sorted(count.items(), key=lambda x: x[1], reverse = False[:3])
 
 
     def group_by_author(): #Group by author
         grouped = {}
-
         for s in sales_inventory:
             author = s["author"]
             grouped[author] = grouped.get(author, 0) + s["quantity"]
@@ -213,7 +211,7 @@ def Calculate():
 
 
 
-# main menu of the program.
+# Main menu of the program.
 while True:
     try:
         option = int(input("""  
