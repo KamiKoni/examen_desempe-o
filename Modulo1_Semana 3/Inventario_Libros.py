@@ -1,5 +1,5 @@
 
-import datetime
+from datetime import date
 import heapq
 from itertools import groupby
 
@@ -11,7 +11,7 @@ inventory = [
     {"title": "pride and prejudice","author" : "jane austen","category" : "romance", "price": 25.0, "quantity": 10},
     {"title": "frankenstein","author" : "mary shelley","category" : "gothic fiction", "price": 30.0, "quantity": 5}
 ]
-sales_inventory = [ {"client" : "","selled product" : "","quantity" : 0,"date" : "","discount" : 0}
+sales_inventory = [ {"client" : "Valentin","selled product" : "it", "author" : "stephen king", "quantity" : 10,"date" : date.today(),"discount" : 10}
                        ]
 Amount = 0  # global variable for the quantity of books to add
 
@@ -62,6 +62,10 @@ def consult():
             return
     else:
         print(("El libro que ingresaste no esta actualmente en el inventario"))
+    
+def show():
+        for book in inventory:
+            print(f"Titulo: {book['title']} |Autor: {book["author"]}| Precio: {book['price']} | Categoria: {book['category']} |Cantidad en stock: {book['quantity']}")
 
 # Function to update the book's price
 def update():
@@ -113,77 +117,95 @@ def remove():
         else:
             print("INGRESA UN VALOR ENTRE Y/N")
 
+def show_sales():
+    for book in sales_inventory:
+        print(f"cliente : {book["client"]}, producto vendido : {book["selled product"]}, author : {book["author"]}, quantity : {book["quantity"]},date : {date.today()}, discount : {book["discount"]}")
+
+# Function to calculate the total value of the inventory
+
 def sales_CRUD():
     # Function to register books
 
-    Amount = int(input("Cuantas ventas haras hoy: "))
-    if not Amount:
-        print( ("ERROR, NO PUEDES DEJAR LOS CAMPOS VACIOS"))
-        return
     sale = []  # temporal list that ultimately is added into the inventory
-
-    while Amount != 0:  # loop to add multiple books
-
-        search = input(("Cual es el titulo del libro que venderas: "))
-        for book in inventory:
-            if book["title"].lower() == search.lower():  # Ignora mayúsculas/minúsculas
-
-                client = input("Cual es el nombre del cliente: ")
-                try:
-                    quantity = int(input("Cual es la cantidad del producto vendido?: "))
-                    discount = float(input("Cual es el descuento aplicado a la compra: "))
-                except ValueError:
-                    print(("ERROR, VALOR INGRESADO NO VALIDO"))
-                    return
-                if(discount <= 0 or quantity <= 0):  # positive numbers validation
-                    print(("ERROR, SOLO SE PERMITEN NUMEROS POSITIVOS"))
-                    continue
-                if(book["quantity"] <= 0):
-                    print("EL STOCK DEL PRODUCTO ESTA VACIO")
-                    break
-                if not client or not quantity or not discount or not search:
-                    print(("ERROR, NO PUEDES DEJAR LOS CAMPOS VACIOS"))
-                    return
+    
+    
+    def register_sales():
+        while True:
+            search = input(("Cual es el titulo del libro que venderas: "))
+            for book in inventory:
+                if book["title"].lower() == search.lower():  # Ignora mayúsculas/minúsculas
+                    client = input("Cual es el nombre del cliente: ")
+                    try:
+                        quantity = int(input("Cual es la cantidad del producto vendido?: "))
+                        discount = float(input("Cual es el descuento aplicado a la compra: "))
+                    except ValueError:
+                        print(("ERROR, VALOR INGRESADO NO VALIDO"))
+                        return
+                    if(discount <= 0 or quantity <= 0):  # positive numbers validation
+                        print(("ERROR, SOLO SE PERMITEN NUMEROS POSITIVOS"))
+                        continue
+                    if(book["quantity"] <= 0):
+                        print("EL STOCK DEL PRODUCTO ESTA VACIO")
+                        break
+                    if not client or not quantity or not discount or not search:
+                        print(("ERROR, NO PUEDES DEJAR LOS CAMPOS VACIOS"))
+                        return
+                    else:
+                        print(("Venta introducida, agregada al sistema exitosamente✔"))
+                        sale = {"client" : client,"selled product" : search, "author" : book["author"], "quantity" : quantity,"date" : {date.today()},"discount" : discount}
+                        book["quantity"] -= quantity
+                        sales_inventory.append(sale)  # adds the book, entered by the user onto the inventory.
+                        return
                 else:
-                    print(("Venta introducida, agregada al sistema exitosamente✔"))
-                    Amount -= 1
-                    sale = {"client" : client,"selled product" : search, "author" : book["author"], "quantity" : quantity,"date" : datetime.date,"discount" : discount}
-                    book["quantity"] -= quantity
-                    inventory.append(sale)  # adds the book, entered by the user onto the inventory.
-                    return
+                        print(("El libro que ingresaste no esta actualmente en el inventario"))
+                        return
+    while True:
+    # loop to add multiple books
+            try:
+                option = int(input("""
+            Bienvenido al sistema de ventas:
+                1. registrar ventas
+                2. mostrar ventas
+                3. salir del sistema
+        """))
+            except ValueError:
+                print("ERROR VALOR INGRESADO NO VALIDO")
+            if option == 1:
+                register_sales()
+                continue
+            elif option == 2:
+                show_sales()
+            elif option == 3:
+                print()
             else:
-                print(("El libro que ingresaste no esta actualmente en el inventario"))
-                return
-
-# Function to calculate the total value of the inventory
+                print("ELIGE UN NUMERO ENTRE 1-3")
+        
 def Calculate():
     total = sum(p["price"] * p["quantity"] for p in inventory)  # Multiply price by quantity
     def majorThree():
-    #     for iteracion in sales_inventory:
-    #         quantity = iteracion["quantity"]
-    #         print(quantity)
-    #     major_three = heapq.nlargest(3, quantity)
-    #     print(f"Los 3 números mayores son: {major_three}")
-        pares_mayores = heapq.nlargest(3, sales_inventory[0], key=lambda item: item[1])
-        print(f"Los 3 pares clave-valor más grandes son: {pares_mayores}")
+        for iteracion in sales_inventory:
+            quantity = iteracion["quantity"]
+        author_list = sorted(sales_inventory, key = lambda el: el[-1])
+        print(f"cliente : {author_list["client"]}, producto vendido : {author_list["selled product"]}, author : {author_list["author"]}, quantity : {author_list["quantity"]},date : {date.today()}, discount : {author_list["discount"]}")
 
-    # def report():
-        # author_list = []
-        # for categoria, grupo in groupby(sales_inventory, key= sales_inventory["author"]):
-        #     authord = authord.append(categoria)
-        #     total_author = sum(authord["quantity"]*inventory["price"])
-        #     author_list = {"author" : sales_inventory["author"], "total" : total_author}
-        #     author_list.append(author_list)
-        #     print(f"author : {author_list["author"]}, total : {author_list['total']}")
+    # def group_by_author():
+    #     author_list = []
+    #     for categoria, grupo in groupby(sales_inventory, key= sales_inventory["author"]):
+    #         authord = authord.append(categoria)
+    #         total_author = sum(authord["quantity"]*inventory["price"])
+    #         author_list = {"author" : sales_inventory["author"], "total" : total_author}
+    #         author_list.append(author_list)
+    #         print(f"author : {author_list["author"]}, total : {author_list['total']}")
         
     def apply_discount():
         for values in sales_inventory:
-            net = (values["discount"]* total) - total
-            net = net
-        return net
+            discount_amount = (values["discount"]/100) * total
+            net = total - discount_amount
+            return net
     majorThree()
     print(f"El valor total del inventario (ingreso bruto) es: {total:.2f}")
     print(f"El valor total del inventario (ingreso neto) es: {apply_discount()}")
+
 
 
 # main menu of the program.
@@ -191,12 +213,14 @@ while True:
     try:
         option = int(input("""  
 1. Agregar libros al inventario  
-2. Consultar libros al inventario  
-3. Actualizar precios del libro 
-4. Eliminar libro del inventario
-5. Calcular el valor total del inventario
-6. Inventario de ventas  
-6. Salir del programa  
+2. Consultar libros al inventario
+3. Mostrar inventario  
+4. Actualizar precios del libro 
+5. Eliminar libro del inventario
+6. Calcular el valor total del inventario
+7. Inventario de ventas
+8. Mostrar inventario de ventas  
+9. Salir del programa  
 Elige una opción: """))
     except ValueError:
         print(" ERROR: Debes ingresar un número.")
@@ -207,14 +231,18 @@ Elige una opción: """))
     elif option == 2:
         consult()
     elif option == 3:
-        update()
+        show()
     elif option == 4:
-        remove()
+        update()
     elif option == 5:
-        Calculate()
+        remove()
     elif option == 6:
-        sales_CRUD()
+        Calculate()
     elif option == 7:
+        sales_CRUD()
+    elif(option == 8):
+        show_sales()
+    elif(option == 9):
         print("👋 Saliendo del programa...")
         break
     else:
