@@ -5,7 +5,7 @@ from itertools import groupby
 
 
 inventory = [
-    {"title": "it", "price": 10.0, "author" : "stephen king", "category" : "horror", "quantity": 100},
+    {"title": "it", "author" : "stephen king", "category" : "horror","price": 10.0, "quantity": 100},
     {"title": "the shining","author" : "stephen king","category" : "horror", "price": 15.0, "quantity": 50},
     {"title": "the portrait of dorian gray","author": "oscar wilde","category" : "gothic horror", "price": 20.0, "quantity": 30},
     {"title": "pride and prejudice","author" : "jane austen","category" : "romance", "price": 25.0, "quantity": 10},
@@ -150,6 +150,7 @@ def sales_CRUD():
                     sale = {"client" : client,"selled product" : search, "author" : book["author"], "quantity" : quantity,"date" : datetime.date,"discount" : discount}
                     book["quantity"] -= quantity
                     inventory.append(sale)  # adds the book, entered by the user onto the inventory.
+                    return
             else:
                 print(("El libro que ingresaste no esta actualmente en el inventario"))
                 return
@@ -158,27 +159,31 @@ def sales_CRUD():
 def Calculate():
     total = sum(p["price"] * p["quantity"] for p in inventory)  # Multiply price by quantity
     def majorThree():
-        for iteracion in sales_inventory:
-            quantity = int(iteracion("quantity"))
-        major_three = heapq.nlargest(3, quantity)
-        print(f"Los 3 números mayores son: {major_three}")
-    def report():
-        author_list = []
-        for categoria, grupo in groupby(sales_inventory, key= sales_inventory["author"]):
-            authord = authord.append(categoria)
-            total_author = sum(authord["quantity"]*inventory["price"])
-            author_list = {"author" : sales_inventory["author"], "total" : total_author}
-            author_list.append(author_list)
-            print(f"author : {author_list["author"]}, total : {author_list['total']}")
+    #     for iteracion in sales_inventory:
+    #         quantity = iteracion["quantity"]
+    #         print(quantity)
+    #     major_three = heapq.nlargest(3, quantity)
+    #     print(f"Los 3 números mayores son: {major_three}")
+        pares_mayores = heapq.nlargest(3, sales_inventory[0], key=lambda item: item[1])
+        print(f"Los 3 pares clave-valor más grandes son: {pares_mayores}")
 
+    # def report():
+        # author_list = []
+        # for categoria, grupo in groupby(sales_inventory, key= sales_inventory["author"]):
+        #     authord = authord.append(categoria)
+        #     total_author = sum(authord["quantity"]*inventory["price"])
+        #     author_list = {"author" : sales_inventory["author"], "total" : total_author}
+        #     author_list.append(author_list)
+        #     print(f"author : {author_list["author"]}, total : {author_list['total']}")
+        
     def apply_discount():
-        for keys, values in sales_inventory:
-            net = sum((values["discount"]* total) - total)
-            net = sum(net)
+        for values in sales_inventory:
+            net = (values["discount"]* total) - total
+            net = net
         return net
     majorThree()
     print(f"El valor total del inventario (ingreso bruto) es: {total:.2f}")
-    print(f"El valor total del inventario (ingreso neto) es: {apply_discount():.2f}")
+    print(f"El valor total del inventario (ingreso neto) es: {apply_discount()}")
 
 
 # main menu of the program.
