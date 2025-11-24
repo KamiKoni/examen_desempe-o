@@ -1,4 +1,4 @@
-
+from collections import defaultdict
 from datetime import date
 import heapq
 from itertools import groupby
@@ -182,27 +182,32 @@ def sales_CRUD():
         
 def Calculate():
     total = sum(p["price"] * p["quantity"] for p in inventory)  # Multiply price by quantity
-    def majorThree():
-        for iteracion in sales_inventory:
-            quantity = iteracion["quantity"]
-        author_list = sorted(sales_inventory, key = lambda el: el[-1])
-        print(f"cliente : {author_list["client"]}, producto vendido : {author_list["selled product"]}, author : {author_list["author"]}, quantity : {author_list["quantity"]},date : {date.today()}, discount : {author_list["discount"]}")
 
-    # def group_by_author():
-    #     author_list = []
-    #     for categoria, grupo in groupby(sales_inventory, key= sales_inventory["author"]):
-    #         authord = authord.append(categoria)
-    #         total_author = sum(authord["quantity"]*inventory["price"])
-    #         author_list = {"author" : sales_inventory["author"], "total" : total_author}
-    #         author_list.append(author_list)
-    #         print(f"author : {author_list["author"]}, total : {author_list['total']}")
-        
-    def apply_discount():
+    def majorThree(): #group 
+        count = {}
+        for s in sales_inventory:
+            name = s["client"]
+            count[name] = count.get(name, 0) + s["quantity"]
+
+        return sorted(count.items(), key=lambda x: x[1], reverse=True)[:3]
+
+
+    def group_by_author(): #Group by author
+        grouped = {}
+
+        for s in sales_inventory:
+            author = s["author"]
+            grouped[author] = grouped.get(author, 0) + s["quantity"]
+            return grouped
+    
+    def apply_discount(): #Apply discount to the total value
         for values in sales_inventory:
             discount_amount = (values["discount"]/100) * total
             net = total - discount_amount
             return net
-    majorThree()
+    
+    print(majorThree())
+    print(group_by_author())
     print(f"El valor total del inventario (ingreso bruto) es: {total:.2f}")
     print(f"El valor total del inventario (ingreso neto) es: {apply_discount()}")
 
